@@ -7,27 +7,21 @@ import TabContent from "./TabContent";
 import { dataState as dataStateAtom, viewData as viewDataAtom, RefContext } from "./atoms";
 import { useRecoilState } from "recoil";
 
-interface TabViewProps {
-  tabs?: Tab[];
-}
-
 const importTabObj: Tab = {
   fileName: "Import",
   fileType: "import",
 };
 
-function TabView({ tabs = [] }: TabViewProps) {
+function TabView() {
   
   // dovolim sam en nov tab saj bos lahka tam importal vec datotek naenkrat
-  const [activeTab, setActiveTab] = useState(
-    tabs.length === 0 ? "Import" : tabs[0].fileName
-  );
-  const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState('Import');
+  // const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [scrollPos, setScrollPos] = useState(0);
-  const [allTabs] = useState(tabs);
+  const [allTabs] = useState(new Map());
   const [isLoading, setIsLoading] = useState(true);
   const [isImportTabOpen, setImportTabOpen] = useState(
-    allTabs.indexOf(importTabObj) >= 0
+    allTabs.has('Import')
   );
   const [data, setData] = useRecoilState(dataStateAtom);
   const [viewData, setViewData] = useRecoilState(viewDataAtom);
@@ -39,10 +33,12 @@ function TabView({ tabs = [] }: TabViewProps) {
     }
   }, [data]);
 
-  function activateTab(fileName: string, index: number, overide = false): void {
-    if (activeTab !== fileName || overide) {
+  function activateTab(fileName: string, overide = false): void {
+    // nekje poklice 2x activate tab in 2x fetcha data za prvi tab ki se odpre, poglej kje
+    if ((activeTab !== fileName || overide) && fileName !== undefined) {
       setActiveTab(fileName);
-      setActiveTabIndex(index);
+      console.log(fileName)
+      // setActiveTabIndex(index);
       if (fileName !== "Import") {
         fetchData(fileName);
       }
@@ -51,19 +47,21 @@ function TabView({ tabs = [] }: TabViewProps) {
 
   const callActivateTab = async (responses: IPostResponse[]) => {
     responses.forEach((value: IPostResponse) => {
-      if (allTabs.some((e) => e.fileName === value.filename)) {
-        const i = allTabs.findIndex((e) => e.fileName === value.filename);
-        activateTab(value.filename, i);
+      if (allTabs.has(value.filename)) {
+        activateTab(value.filename)
+        return
       } else {
         let i: Tab = {
           fileName: value.filename,
           fileType: value.filetype,
         };
-        allTabs.push(i);
+        allTabs.set(value.filename, i);
       }
     });
-    activateTab(allTabs[allTabs.length - 1].fileName, allTabs.length - 1);
-    fetchData(allTabs[allTabs.length - 1].fileName);
+    // activateTab(allTabs[allTabs.length - 1].fileName, allTabs.length - 1);
+    const [lastKey] = [...allTabs].at(-1) || []
+    activateTab(lastKey);
+    fetchData(lastKey);
   };
 
   async function fetchData(filename: string) {
@@ -79,7 +77,7 @@ function TabView({ tabs = [] }: TabViewProps) {
         body: JSON.stringify(filename),
         cache: "default",
       });
-      closeTab("Import", null);
+      
       let t: Object = await response.json();
       let columns: string[] = Object.keys(t);
       let dataO: Object = {};
@@ -93,10 +91,15 @@ function TabView({ tabs = [] }: TabViewProps) {
       setData([...data, finalObject]);
       setViewData(Object.values(finalObject)[0] as Object);
       setIsLoading(false);
+      if (isImportTabOpen) {
+        closeTab("Import", null);
+      }
     } else {
       setIsLoading(false);
       setViewData(Object.values(result)[0] as Object);
-      closeTab("Import", null);
+      if (isImportTabOpen) {
+        closeTab("Import", null);
+      }
     }
   }
 
@@ -120,8 +123,8 @@ function TabView({ tabs = [] }: TabViewProps) {
 
   function importTab() {
     if (isImportTabOpen) return;
-    allTabs.push(importTabObj);
-    activateTab(allTabs[allTabs.length - 1].fileName, allTabs.length - 1);
+    allTabs.set('Import', importTabObj)
+    activateTab('Import');
     setImportTabOpen(true);
   }
 
@@ -141,58 +144,30 @@ function TabView({ tabs = [] }: TabViewProps) {
 
   function closeTab(fileName: string, e: Event | null): void {
     if (e !== null) e.stopPropagation();
-    const len = allTabs.length;
-    for (let i = 0; i < allTabs.length; i += 1) {
-      if (allTabs[i].fileName === fileName) {
-        if (
-          activeTabIndex === 0 &&
-          allTabs.length === 1 &&
-          allTabs[i].fileType === "import"
-        )
-          return;
-        if (allTabs[i].fileType === "import") setImportTabOpen(false);
-        // predn zapremo se prestavmo na prejsn tab ce smo trenutno na aktivnem ce ne ignoriramo, ce ga ni gremo na new tab
-        let dataIndex = data.findIndex((x) => Object.keys(x)[0] === fileName);
-        if (activeTabIndex === 0 && allTabs.length === 1) {
-          allTabs.splice(i, 1);
-          // setData(data.splice(dataIndex, 1))
-          removeFileFetch(fileName);
-          importTab();
-          return;
-        }
-        if (allTabs.indexOf(allTabs[i]) === activeTabIndex) {
-          if (activeTabIndex + 1 === len) {
-            allTabs.splice(i, 1);
-            activateTab(
-              allTabs[activeTabIndex - 1].fileName,
-              activeTabIndex - 1
-            );
-            removeFileFetch(fileName);
-            // setData(data.splice(dataIndex, 1))
-            return;
-          }
-          allTabs.splice(i, 1);
-          activateTab(allTabs[activeTabIndex].fileName, activeTabIndex);
-          removeFileFetch(fileName);
-          // setData(data.splice(dataIndex, 1))
-          return;
-        }
-        allTabs.splice(i, 1);
-        if (i > activeTabIndex) {
-          activateTab(allTabs[activeTabIndex].fileName, activeTabIndex, true);
-          removeFileFetch(fileName);
-          // setData(data.splice(dataIndex, 1))
-        } else {
-          activateTab(
-            allTabs[activeTabIndex - 1].fileName,
-            activeTabIndex - 1,
-            true
-          );
-          removeFileFetch(fileName);
-          // setData(data.splice(dataIndex, 1))
-        }
+    const len = allTabs.size;
+    const key = Array.from(allTabs.keys())
+    //we only have 1 tab open
+    if (len === 1) {
+      // only the import tab is open, don't delete it
+      if (fileName === 'Import') {
+        return
+      }
+      // if we remove the only tab, open the import tab
+      importTab();
+    } else {
+      // we have more than 1 tab open
+      if (fileName === 'Import') {
+        setImportTabOpen(false)
+      }
+      if (activeTab === fileName) {
+        // we are on the tab we want to delete
+        let currentIndex = key.indexOf(fileName)
+        let newTab = key[currentIndex - 1]
+        activateTab(newTab)
       }
     }
+    allTabs.delete(fileName)
+    removeFileFetch(fileName);
     //remove from state
     setRandomKey(Math.random())
   }
@@ -237,31 +212,27 @@ function TabView({ tabs = [] }: TabViewProps) {
             >
               <i className="fas fa-file-plus" />
             </div>
-            {allTabs.length === 0
-              ? importTab()
-              : allTabs.map((tabData: Tab, index) => {
-                  return (
-                    <TabChild
-                      key={tabData.fileName}
-                      tabData={tabData}
+            {allTabs.size === 0 ? importTab() : Array.from(allTabs).map(([key, value], index) => {
+                  return(<TabChild
+                      key={key}
+                      tabData={value}
                       activeTab={activeTab}
                       index={index}
                       activateTab={activateTab}
                       closeTab={closeTab}
-                    />
-                  );
-                })}
+                    />)
+                })
+                }
           </div>
         </div>
       </OverlayScrollbarsComponent>
       <div className="tab-content">
-        {allTabs[activeTabIndex].fileType === "import" ? (
-          <Import callActivateTab={callActivateTab} />
-        ) : isLoading ? (
+        {activeTab === 'Import' ? (<Import callActivateTab={callActivateTab} />) : isLoading ? (
           <h1>Loading...</h1>
         ) : (
           <TabContent data={viewData} filename={activeTab} />
-        )}
+        )
+        }
       </div>
     </>
   );
