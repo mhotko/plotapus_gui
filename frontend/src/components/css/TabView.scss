@@ -1,0 +1,151 @@
+.tabview {
+  cursor: pointer;
+  // height: 40px;
+  background-color: #ecf0f1;
+  font-size: 13px;
+  height: 100%;
+}
+
+// .os-scrollbar-horizontal {
+//   bottom: -5px !important;
+// }
+
+.os-scrollbar-horizontal .os-scrollbar-handle {
+  min-height: 3px;
+  max-height: 3px;
+}
+
+.os-theme-dark.os-scrollbar > .os-scrollbar-track > .os-scrollbar-handle {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.os-theme-dark.os-scrollbar > .os-scrollbar-track > .os-scrollbar-handle {
+  border-radius: 0 !important;
+}
+
+.tabs {
+  height: 40px;
+  display: flex;
+}
+
+.tab,
+.active-tab {
+  position: relative;
+  background-color: #f5f5f5;
+  white-space: -moz-nowrap !important; /* Firefox */
+  white-space: -o-nowrap !important; /* Opera */
+  white-space: nowrap !important; /* Chrome */
+  word-wrap: break-word !important; /* IE */
+  user-select: none;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  align-items: center;
+  padding-left: 34px;
+  padding-right: 34px;
+  border-right: 1px solid darken(#ecf0f1, 10);
+  height: 40px;
+  width: fit-content;
+}
+
+.tab {
+  &:hover {
+    .close-tab {
+      visibility: visible;
+    }
+  }
+}
+
+.active-tab {
+  background-color: white;
+
+  .close-tab {
+    visibility: visible;
+  }
+}
+
+.file-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+}
+
+.csv-icon {
+  color: #27ae60;
+}
+
+.import-icon {
+  color: #ff0084;
+}
+
+.txt-icon {
+  color: #34495E;
+}
+
+.excel-icon {
+  color: #0a5f2d;
+}
+
+.mpr-icon {
+  color: #8E44AD;
+}
+
+.default-icon {
+  color: #3498db;
+}
+
+.close-tab {
+  position: absolute;
+  right: 14px;
+  top: 55%;
+  transform: translateY(-50%);
+  color: darken(#bdc3c7, 40);
+  visibility: hidden;
+  font-size: 12px;
+
+  &:hover {
+    color: darken(#bdc3c7, 70);
+    &::before {
+      content: "";
+      width: 16px;
+      height: 16px;
+      background-color: lighten(#bdc3c7, 10);
+      position: absolute;
+      border-radius: 4px;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-60%);
+      z-index: -1;
+    }
+  }
+}
+
+.new-tab {
+  min-height: 40px;
+  min-width: 40px;
+  position: relative;
+  border-right: 1px solid darken(#ecf0f1, 10);
+
+  i {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    color: darken(#bdc3c7, 40);
+    transition: color 0.3s ease;
+  }
+
+  &:hover {
+    i {
+      color: #3498db;
+    }
+  }
+}
+
+.tab-content {
+  height: calc(100% - 40px);
+  position: relative;
+}

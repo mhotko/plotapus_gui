@@ -1,0 +1,55 @@
+.import-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.dropzone-container {
+  background-color: #FAFAFA;
+  height: 50%;
+  width: 80%;
+  margin: 15px 0;
+  outline: none;
+  border-radius: 5px;
+  border: 2px dashed darken(#ecf0f1, 10);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+  cursor: pointer;
+
+  &:hover {
+    border-color: #3498DB;
+
+  }
+
+  i {
+    color: darken(#ecf0f1, 30);
+    font-size: 60px;
+    margin-bottom: 20px;
+  }
+
+  p {
+    color: darken(#ecf0f1, 30);
+    margin-bottom: 0;
+  }
+
+}
+
+.border-green {
+  border-color: #27AE60;
+
+  i, p {
+    color: #27AE60;
+  }
+}
+
+.border-red {
+  border-color: #E74C3C;
+
+  i, p {
+    color: #E74C3C;
+  }
+}

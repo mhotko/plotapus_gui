@@ -1,0 +1,33 @@
+.split {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+@font-face {
+  font-family: FiraCode;
+  src: url('./webfonts/FiraCode-Regular.woff2');
+}
+
+html {
+  font-family: FiraCode;
+}
+
+
+.gutter {
+  background-color: #eee;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transition: 0.5s background-color ease;
+  transition-delay: 0.7s;
+
+}
+
+.gutter:hover {
+  background-color: #3498DB;
+}
+
+.gutter.gutter-horizontal {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+  cursor: col-resize;
+}
