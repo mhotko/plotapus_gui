@@ -3,7 +3,7 @@ import {atom} from 'recoil'
 
 export const dataState = atom({
   key: 'dataState', // unique ID (with respect to other atoms/selectors)
-  default: [] as Object[], // default value (aka initial value)
+  default: new Map<string, Object>(), // default value (aka initial value)
 });
 
 export const viewData = atom({
