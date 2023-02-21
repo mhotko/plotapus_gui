@@ -1,10 +1,13 @@
 import Handsontable from "handsontable";
 import { useContext } from "react";
-import { useRecoilValue } from "recoil";
 import { RefContext } from "./atoms";
+import "./css/PlotView.scss";
+import Split from "react-split";
+import Plot from "./Plot";
+import PlotSettings from "./PlotSettings";
 
 export default function PlotView() {
-  const context: Handsontable = useContext(RefContext);
+  const context: {} = useContext(RefContext);
   const hot: Handsontable = context.ref
 
   function test() {
@@ -13,7 +16,13 @@ export default function PlotView() {
 
   return (
     <div className="sheetview-container">
-      <button onClick={test} />
+      <div className="toolbar">
+        
+      </div>
+      <Split className="split-vert" direction="vertical" gutterSize={3}>
+       <Plot></Plot>
+       <PlotSettings></PlotSettings>
+      </Split>
     </div>
   );
 }

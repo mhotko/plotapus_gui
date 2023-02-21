@@ -6,7 +6,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PlotView from "./components/PlotView";
 import { RefContext } from "./components/atoms";
-import Handsontable from "handsontable";
 
 function App() {
   const [ref, setRef] = useState({});
