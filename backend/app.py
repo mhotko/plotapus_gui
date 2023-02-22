@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
 import os
 from plotapus import DataHelper as dh
 
-UPLOAD_FOLDER = r'C:\Users\Asus\Desktop\jupyter\gui\backend\uploads'
+UPLOAD_FOLDER = r'C:\Users\alesma\Desktop\plotapus-gui\backend\uploads'
+
 ALLOWED_EXTENSIONS = {'xlsx', 'mpr', 'txt', 'csv', 'xls'}
 
 
@@ -26,6 +27,7 @@ def get_json_data(filename):
 
 
 @app.route("/upload_file", methods=['POST'])
+@cross_origin(origin='localhost')
 def upload_file():
     if request.method == 'POST':
         # check if the post request has the file part
@@ -42,6 +44,7 @@ def upload_file():
             return jsonify(filename=filename, filetype=filename.rsplit('.', 1)[1].lower())
 
 @app.route("/remove_file", methods=['POST'])
+@cross_origin(origin='localhost')
 def remove_file():
     if request.method == 'POST':
         data = request.get_json()
@@ -49,6 +52,7 @@ def remove_file():
         return ('', 200)
 
 @app.route("/get_data", methods=['POST'])
+@cross_origin(origin='localhost')
 def get_data():
     if request.method == 'POST':
         data = request.get_json()
