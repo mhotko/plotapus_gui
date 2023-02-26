@@ -4,7 +4,8 @@ from werkzeug.utils import secure_filename
 import os
 from plotapus import DataHelper as dh
 
-UPLOAD_FOLDER = r'C:\Users\alesma\Desktop\plotapus-gui\backend\uploads'
+# UPLOAD_FOLDER = r'C:\Users\alesma\Desktop\plotapus-gui\backend\uploads'
+UPLOAD_FOLDER = r'C:\Users\Asus\Desktop\jupyter\gui\backend\uploads'
 
 ALLOWED_EXTENSIONS = {'xlsx', 'mpr', 'txt', 'csv', 'xls'}
 

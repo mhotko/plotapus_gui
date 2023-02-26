@@ -3,6 +3,11 @@
   height: 100%;
   background-color: #ecf0f1;
   float: left;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-direction: column;
 }
 
 .split-vert {
@@ -18,4 +23,65 @@
 .gutter.gutter-vertical {
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=');
   cursor: row-resize;
+}
+
+.chart-dropdown {
+  display: flex ;
+  
+  height: 40px;
+  width: 40px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  i {
+    font-size: 22px;
+    color: darken(#94aab0, 15);
+    transition: all 0.3s ease;
+  }
+
+  &:hover {
+    background-color: darken(#ecf0f1,10);
+
+    i {
+      color: #2980B9;
+    }
+  }
+
+  .sidebar-menu {
+    position: absolute;
+    left: 60px;
+    width: 150px;
+    background-color: #ecf0f1;
+    border-radius: 5px;
+
+    &::before {
+      content:"\A";
+      border-style: solid;
+      border-width: 10px 15px 10px 0;
+      border-color: transparent #94aab0 transparent transparent;
+      position: absolute;
+      left: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .chart-element {
+      height: 40px;
+      line-height: 40px;
+      padding-left: 10px;
+      font-size: 14px;
+
+      &:hover {
+        background-color: darken(#ecf0f1,10);
+      }
+
+    }
+
+    .chart-element:not(:first-child) {
+      border-top: 1px solid lighten(#94aab0, 15);
+    }
+  }
+
 }
